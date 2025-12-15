@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 900px; margin: 0 auto; padding: 30px;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h2 style="margin: 0; color: #6200ea;">📜 Task History</h2>
+            <p style="color: #666; margin: 5px 0 0;">All your completed achievements.</p>
+        </div>
+        <a href="{% url 'index' %}" class="btn-search" style="text-decoration: none; padding: 10px 20px; font-size: 14px;">Back to Dashboard</a>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+            <tr style="background: rgba(98, 0, 234, 0.1); color: #6200ea; text-align: left;">
+                <th style="padding: 15px; border-radius: 10px 0 0 10px;">Task Title</th>
+                <th style="padding: 15px;">Priority</th>
+                <th style="padding: 15px;">Completed On</th>
+                <th style="padding: 15px; border-radius: 0 10px 10px 0;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: 500;">
+                    <span style="text-decoration: line-through; color: #888;">{{ task.title }}</span>
+                </td>
+                <td style="padding: 15px;">
+                    {% if task.priority == 'High' %}
+                        <span style="background: #ffebee; color: #c62828; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold;">High</span>
+                    {% elif task.priority == 'Medium' %}
+                        <span style="background: #fff8e1; color: #f57f17; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold;">Medium</span>
+                    {% else %}
+                        <span style="background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold;">Low</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 15px; color: #666;">
+                    {{ task.created|date:"M d, Y" }}
+                </td>
+                <td style="padding: 15px;">
+                    <a href="{% url 'delete_task' task.id %}" style="color: #ff5252; text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                        <span class="material-icons-round" style="font-size: 18px;">delete</span> Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 40px; color: #888;">
+                    No history found. Complete some tasks! 🚀
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

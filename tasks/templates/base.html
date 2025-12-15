@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do App</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --primary-color: #6200ea;
+            --text-dark: #1f2937;
+            --glass-white: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        
+        .navbar {
+            background: var(--glass-white);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex; align-items: center; gap: 5px;
+            transition: 0.3s;
+        }
+        .nav-link:hover { color: var(--primary-color); }
+
+        
+        .profile-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px; height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 2px 5px rgba(98, 0, 234, 0.3);
+        }
+
+ 
+        .dropdown-menu {
+            display: none; 
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 15px;
+            z-index: 1001;
+            border: 1px solid #eee;
+        }
+
+        .profile-container:hover .dropdown-menu {
+            display: block;
+        }
+
+        .user-info {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .user-name { font-weight: 600; color: #2c3e50; margin: 0; }
+        .user-role { font-size: 12px; color: #888; margin: 0; }
+
+        .logout-btn {
+            display: flex; align-items: center; gap: 8px;
+            color: #ff5252;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+           
+            background: transparent;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background: #ffebee; }
+        
+.profile-pic, .letter-avatar {
+    width: 40px;     
+    height: 40px;
+    border-radius: 50%; 
+    object-fit: cover;
+}
+
+.letter-avatar {
+    background-color: #5f27cd; 
+    color: white;             
+    display: flex;
+    align-items: center;       
+    justify-content: center;   
+    font-weight: bold;
+    font-size: 20px;           
+    text-transform: uppercase;
+}
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'index' %}" class="nav-logo">
+            <span class="material-icons-round">check_circle</span> To Do App
+        </a>
+
+        <div class="nav-right">
+            {% if user.is_authenticated %}
+                <a href="{% url 'index' %}" class="nav-link">
+                    <span class="material-icons-round" style="font-size: 20px;">dashboard</span> Dashboard
+                </a>
+
+                <a href="{% url 'history' %}" class="nav-link">
+                    <span class="material-icons-round" style="font-size: 20px;">history</span> History
+                </a>
+
+                <div class="profile-container">
+                    <div class="user-avatar" style="overflow: hidden; padding: 0;">
+    {% if user.profile.image %}
+    <img src="{{ user.profile.image.url }}" class="profile-pic">
+
+{% else %}
+    <div class="letter-avatar">
+        {{ user.username|first|upper }}
+    </div>
+{% endif %}
+</div>
+
+                    <div class="dropdown-menu">
+                        <div class="user-info">
+                            <p class="user-name">{{ user.username|title }}</p>
+                            <p class="user-role">User ID: {{ user.id }}</p>
+                        </div>
+                        <a href="{% url 'profile' %}" class="logout-btn" style="color: #6200ea;">
+    <span class="material-icons-round" style="font-size: 18px;">person</span> My Profile
+</a>
+                        <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn" style="background: none; border: none; width: 100%; cursor: pointer; text-align: left; font-family: inherit;">
+        <span class="material-icons-round" style="font-size: 18px;">logout</span> Logout
+    </button>
+</form>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-link" style="font-weight: 600; color: var(--primary-color);">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div style="padding: 30px 40px;">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

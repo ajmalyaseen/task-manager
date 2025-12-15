@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 500px; margin: 0 auto; padding: 40px; text-align: center;">
+    
+    <h2 style="color: #6200ea;">My Profile 😎</h2>
+
+    <div style="margin: 20px auto; width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 4px solid #6200ea;">
+        {% if user.profile.image %}
+            <img src="{{ user.profile.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+        {% else %}
+            <div style="width: 100%; height: 100%; background: #6200ea; color: white; display: flex; align-items: center; justify-content: center; font-size: 60px;">
+                {{ user.username.0|upper }}
+            </div>
+        {% endif %}
+    </div>
+
+    <h3>{{ user.username|title }}</h3>
+    <p style="color: #666;">User ID: {{ user.id }}</p>
+
+    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label style="display: block; margin-bottom: 10px; font-weight: 500;">Change Profile Photo</label>
+        <input type="file" name="image" accept="image/*" style="margin-bottom: 20px;">
+        <button type="submit" class="btn-search" style="width: 100%;">Upload Photo 📸</button>
+    </form>
+</div>
+{% endblock %}
